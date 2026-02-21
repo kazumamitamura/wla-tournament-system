@@ -13,7 +13,7 @@ export function downloadResultsCSV(
     const headers = [
         "階級",
         "性別",
-        "順位",
+        "総合順位",
         "氏名",
         "所属",
         "SN 1回目",
@@ -23,6 +23,7 @@ export function downloadResultsCSV(
         "SN 3回目",
         "SN 3結果",
         "SN Best",
+        "SN順位",
         "CJ 1回目",
         "CJ 1結果",
         "CJ 2回目",
@@ -30,6 +31,7 @@ export function downloadResultsCSV(
         "CJ 3回目",
         "CJ 3結果",
         "CJ Best",
+        "CJ順位",
         "トータル",
         "得点",
     ];
@@ -43,7 +45,7 @@ export function downloadResultsCSV(
             const row: string[] = [
                 `${wcr.weightClass}kg`,
                 genderLabel,
-                ar.rank?.toString() ?? "",
+                ar.totalRank?.toString() ?? "",
                 ar.athlete.name,
                 ar.athlete.team ?? "",
             ];
@@ -55,6 +57,7 @@ export function downloadResultsCSV(
                 row.push(a ? statusLabel(a.status) : "");
             }
             row.push(ar.bestSnatch?.toString() ?? "");
+            row.push(ar.snatchRank?.toString() ?? "");
 
             // C&J attempts
             for (let i = 0; i < 3; i++) {
@@ -63,6 +66,7 @@ export function downloadResultsCSV(
                 row.push(a ? statusLabel(a.status) : "");
             }
             row.push(ar.bestCJ?.toString() ?? "");
+            row.push(ar.cjRank?.toString() ?? "");
 
             row.push(ar.total?.toString() ?? "");
             row.push(ar.points > 0 ? ar.points.toString() : "");

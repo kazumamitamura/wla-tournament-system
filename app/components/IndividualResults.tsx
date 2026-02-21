@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import type { WeightClassResult } from "@/lib/calculations";
+import type { Attempt } from "@/app/actions/attempts";
 import { GENDER_LABELS, type Gender } from "@/lib/constants";
-import { Trophy, Medal } from "lucide-react";
+import { Trophy } from "lucide-react";
 
 type Props = {
     weightClassResults: WeightClassResult[];
@@ -70,135 +71,171 @@ export default function IndividualResults({ weightClassResults }: Props) {
             </div>
 
             {/* Results table */}
-            <div className="rounded-2xl border border-white/[0.06] overflow-hidden">
+            <div className="rounded-lg border border-slate-700/60 overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
+                    <table className="w-full text-sm border-collapse">
                         <thead>
-                            <tr className="bg-slate-900/80 border-b border-white/[0.06]">
-                                <th className="text-center text-[11px] font-medium text-slate-500 uppercase tracking-wider px-3 py-3 w-14">
-                                    順位
+                            <tr className="bg-slate-800 text-slate-400">
+                                {/* Total rank */}
+                                <th className="text-center text-[11px] font-semibold px-2 py-2.5 border border-slate-700/60 w-12 bg-amber-500/5">
+                                    総合
                                 </th>
-                                <th className="text-left text-[11px] font-medium text-slate-500 uppercase tracking-wider px-3 py-3">
+                                <th className="text-left text-[11px] font-semibold px-3 py-2.5 border border-slate-700/60 min-w-[100px]">
                                     選手
                                 </th>
-                                <th className="text-left text-[11px] font-medium text-slate-500 uppercase tracking-wider px-3 py-3">
+                                <th className="text-left text-[11px] font-semibold px-3 py-2.5 border border-slate-700/60 min-w-[80px]">
                                     所属
                                 </th>
-                                <th className="text-center text-[11px] font-medium text-slate-500 uppercase tracking-wider px-3 py-3">
+                                {/* Snatch attempts */}
+                                <th className="text-center text-[11px] font-semibold px-2 py-2.5 border border-slate-700/60 w-14">
                                     SN 1
                                 </th>
-                                <th className="text-center text-[11px] font-medium text-slate-500 uppercase tracking-wider px-3 py-3">
+                                <th className="text-center text-[11px] font-semibold px-2 py-2.5 border border-slate-700/60 w-14">
                                     SN 2
                                 </th>
-                                <th className="text-center text-[11px] font-medium text-slate-500 uppercase tracking-wider px-3 py-3">
+                                <th className="text-center text-[11px] font-semibold px-2 py-2.5 border border-slate-700/60 w-14">
                                     SN 3
                                 </th>
-                                <th className="text-center text-[11px] font-medium text-slate-500 uppercase tracking-wider px-3 py-3 bg-blue-500/5">
+                                <th className="text-center text-[11px] font-semibold px-2 py-2.5 border border-slate-700/60 w-14 bg-blue-500/5">
                                     SN Best
                                 </th>
-                                <th className="text-center text-[11px] font-medium text-slate-500 uppercase tracking-wider px-3 py-3">
-                                    C&J 1
+                                <th className="text-center text-[11px] font-semibold px-2 py-2.5 border border-slate-700/60 w-10 bg-blue-500/5">
+                                    SN位
                                 </th>
-                                <th className="text-center text-[11px] font-medium text-slate-500 uppercase tracking-wider px-3 py-3">
-                                    C&J 2
+                                {/* C&J attempts */}
+                                <th className="text-center text-[11px] font-semibold px-2 py-2.5 border border-slate-700/60 w-14">
+                                    CJ 1
                                 </th>
-                                <th className="text-center text-[11px] font-medium text-slate-500 uppercase tracking-wider px-3 py-3">
-                                    C&J 3
+                                <th className="text-center text-[11px] font-semibold px-2 py-2.5 border border-slate-700/60 w-14">
+                                    CJ 2
                                 </th>
-                                <th className="text-center text-[11px] font-medium text-slate-500 uppercase tracking-wider px-3 py-3 bg-blue-500/5">
-                                    C&J Best
+                                <th className="text-center text-[11px] font-semibold px-2 py-2.5 border border-slate-700/60 w-14">
+                                    CJ 3
                                 </th>
-                                <th className="text-center text-[11px] font-medium text-slate-500 uppercase tracking-wider px-3 py-3 bg-amber-500/5">
+                                <th className="text-center text-[11px] font-semibold px-2 py-2.5 border border-slate-700/60 w-14 bg-blue-500/5">
+                                    CJ Best
+                                </th>
+                                <th className="text-center text-[11px] font-semibold px-2 py-2.5 border border-slate-700/60 w-10 bg-blue-500/5">
+                                    CJ位
+                                </th>
+                                {/* Total */}
+                                <th className="text-center text-[11px] font-semibold px-2 py-2.5 border border-slate-700/60 w-16 bg-amber-500/5">
                                     トータル
                                 </th>
-                                <th className="text-center text-[11px] font-medium text-slate-500 uppercase tracking-wider px-3 py-3">
+                                {/* Points */}
+                                <th className="text-center text-[11px] font-semibold px-2 py-2.5 border border-slate-700/60 w-10">
                                     得点
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/[0.04]">
-                            {current.athletes.map((ar) => (
-                                <tr
-                                    key={ar.athlete.id}
-                                    className={`hover:bg-white/[0.02] transition-colors ${ar.rank && ar.rank <= 3 ? "bg-amber-500/[0.02]" : ""
-                                        }`}
-                                >
-                                    {/* Rank */}
-                                    <td className="px-3 py-3 text-center">
-                                        {ar.rank ? (
+                        <tbody>
+                            {current.athletes.map((ar) => {
+                                const isTop3 = ar.totalRank !== null && ar.totalRank <= 3;
+
+                                return (
+                                    <tr
+                                        key={ar.athlete.id}
+                                        className={`transition-colors ${isTop3
+                                                ? "bg-amber-500/[0.03] hover:bg-amber-500/[0.06]"
+                                                : "bg-slate-900/60 hover:bg-slate-800/60"
+                                            }`}
+                                    >
+                                        {/* Total Rank */}
+                                        <td className="text-center px-2 py-2 border border-slate-700/40 bg-amber-500/5">
+                                            {ar.totalRank ? (
+                                                <span
+                                                    className={`inline-flex items-center justify-center w-7 h-7 rounded-lg border text-xs font-bold ${RANK_BADGE[ar.totalRank] ??
+                                                        "bg-slate-800/50 text-slate-400 border-white/[0.06]"
+                                                        }`}
+                                                >
+                                                    {ar.totalRank}
+                                                </span>
+                                            ) : (
+                                                <span className="text-xs text-slate-600">—</span>
+                                            )}
+                                        </td>
+
+                                        {/* Name */}
+                                        <td className="px-3 py-2 border border-slate-700/40">
                                             <span
-                                                className={`inline-flex items-center justify-center w-7 h-7 rounded-lg border text-xs font-bold ${RANK_BADGE[ar.rank] ??
-                                                    "bg-slate-800/50 text-slate-400 border-white/[0.06]"
+                                                className={`text-sm ${ar.totalRank && ar.totalRank <= 3
+                                                        ? RANK_STYLES[ar.totalRank]
+                                                        : "text-white"
                                                     }`}
                                             >
-                                                {ar.rank}
+                                                {ar.athlete.name}
                                             </span>
-                                        ) : (
-                                            <span className="text-xs text-slate-600">—</span>
-                                        )}
-                                    </td>
-
-                                    {/* Name */}
-                                    <td className="px-3 py-3">
-                                        <span
-                                            className={`text-sm ${ar.rank && ar.rank <= 3 ? RANK_STYLES[ar.rank] : "text-white"}`}
-                                        >
-                                            {ar.athlete.name}
-                                        </span>
-                                    </td>
-
-                                    {/* Team */}
-                                    <td className="px-3 py-3 text-xs text-slate-400 truncate max-w-[120px]">
-                                        {ar.athlete.team || "—"}
-                                    </td>
-
-                                    {/* Snatch attempts */}
-                                    {[0, 1, 2].map((i) => (
-                                        <td key={`sn-${i}`} className="px-3 py-3 text-center">
-                                            <AttemptDisplay attempt={ar.snatchAttempts[i]} />
                                         </td>
-                                    ))}
 
-                                    {/* SN Best */}
-                                    <td className="px-3 py-3 text-center bg-blue-500/5">
-                                        <span className="text-sm font-semibold text-blue-400 tabular-nums">
-                                            {ar.bestSnatch ?? "—"}
-                                        </span>
-                                    </td>
-
-                                    {/* C&J attempts */}
-                                    {[0, 1, 2].map((i) => (
-                                        <td key={`cj-${i}`} className="px-3 py-3 text-center">
-                                            <AttemptDisplay attempt={ar.cjAttempts[i]} />
+                                        {/* Team */}
+                                        <td className="px-3 py-2 border border-slate-700/40 text-xs text-slate-400 truncate max-w-[120px]">
+                                            {ar.athlete.team || "—"}
                                         </td>
-                                    ))}
 
-                                    {/* C&J Best */}
-                                    <td className="px-3 py-3 text-center bg-blue-500/5">
-                                        <span className="text-sm font-semibold text-blue-400 tabular-nums">
-                                            {ar.bestCJ ?? "—"}
-                                        </span>
-                                    </td>
+                                        {/* Snatch 1-3 */}
+                                        {[0, 1, 2].map((i) => (
+                                            <td
+                                                key={`sn-${i}`}
+                                                className="text-center px-2 py-2 border border-slate-700/40"
+                                            >
+                                                <AttemptDisplay attempt={ar.snatchAttempts[i]} />
+                                            </td>
+                                        ))}
 
-                                    {/* Total */}
-                                    <td className="px-3 py-3 text-center bg-amber-500/5">
-                                        <span className="text-sm font-bold text-amber-400 tabular-nums">
-                                            {ar.total ?? "—"}
-                                        </span>
-                                    </td>
-
-                                    {/* Points */}
-                                    <td className="px-3 py-3 text-center">
-                                        {ar.points > 0 ? (
-                                            <span className="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 tabular-nums">
-                                                {ar.points}
+                                        {/* SN Best */}
+                                        <td className="text-center px-2 py-2 border border-slate-700/40 bg-blue-500/5">
+                                            <span className="text-xs font-semibold text-blue-400 tabular-nums">
+                                                {ar.bestSnatch ?? "—"}
                                             </span>
-                                        ) : (
-                                            <span className="text-xs text-slate-600">—</span>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
+                                        </td>
+
+                                        {/* SN Rank */}
+                                        <td className="text-center px-2 py-2 border border-slate-700/40 bg-blue-500/5">
+                                            <RankBadge rank={ar.snatchRank} small />
+                                        </td>
+
+                                        {/* C&J 1-3 */}
+                                        {[0, 1, 2].map((i) => (
+                                            <td
+                                                key={`cj-${i}`}
+                                                className="text-center px-2 py-2 border border-slate-700/40"
+                                            >
+                                                <AttemptDisplay attempt={ar.cjAttempts[i]} />
+                                            </td>
+                                        ))}
+
+                                        {/* CJ Best */}
+                                        <td className="text-center px-2 py-2 border border-slate-700/40 bg-blue-500/5">
+                                            <span className="text-xs font-semibold text-blue-400 tabular-nums">
+                                                {ar.bestCJ ?? "—"}
+                                            </span>
+                                        </td>
+
+                                        {/* CJ Rank */}
+                                        <td className="text-center px-2 py-2 border border-slate-700/40 bg-blue-500/5">
+                                            <RankBadge rank={ar.cjRank} small />
+                                        </td>
+
+                                        {/* Total */}
+                                        <td className="text-center px-2 py-2 border border-slate-700/40 bg-amber-500/5">
+                                            <span className="text-sm font-bold text-amber-400 tabular-nums">
+                                                {ar.total ?? "—"}
+                                            </span>
+                                        </td>
+
+                                        {/* Points */}
+                                        <td className="text-center px-2 py-2 border border-slate-700/40">
+                                            {ar.points > 0 ? (
+                                                <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 tabular-nums">
+                                                    {ar.points}
+                                                </span>
+                                            ) : (
+                                                <span className="text-xs text-slate-600">—</span>
+                                            )}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                     </table>
                 </div>
@@ -207,15 +244,12 @@ export default function IndividualResults({ weightClassResults }: Props) {
     );
 }
 
-// --- Attempt display helper ---
-
-import type { Attempt } from "@/app/actions/attempts";
+// --- Sub-components ---
 
 function AttemptDisplay({ attempt }: { attempt: Attempt | null }) {
     if (!attempt || attempt.declared_weight == null) {
         return <span className="text-xs text-slate-600">—</span>;
     }
-
     if (attempt.status === "success") {
         return (
             <span className="text-xs font-semibold text-emerald-400 tabular-nums">
@@ -223,7 +257,6 @@ function AttemptDisplay({ attempt }: { attempt: Attempt | null }) {
             </span>
         );
     }
-
     if (attempt.status === "fail") {
         return (
             <span className="text-xs font-medium text-red-400 line-through tabular-nums">
@@ -231,17 +264,38 @@ function AttemptDisplay({ attempt }: { attempt: Attempt | null }) {
             </span>
         );
     }
-
     if (attempt.status === "pass") {
-        return (
-            <span className="text-xs text-slate-500 tabular-nums">—</span>
-        );
+        return <span className="text-xs text-slate-500 tabular-nums">—</span>;
     }
-
-    // pending
     return (
         <span className="text-xs text-slate-400 tabular-nums">
             {attempt.declared_weight}
+        </span>
+    );
+}
+
+function RankBadge({
+    rank,
+    small,
+}: {
+    rank: number | null;
+    small?: boolean;
+}) {
+    if (rank === null) {
+        return <span className="text-xs text-slate-600">—</span>;
+    }
+
+    const style =
+        rank <= 3
+            ? RANK_BADGE[rank]
+            : "bg-slate-800/50 text-slate-500 border-white/[0.04]";
+
+    return (
+        <span
+            className={`inline-flex items-center justify-center rounded border text-[10px] font-bold tabular-nums ${style} ${small ? "w-5 h-5" : "w-7 h-7 text-xs"
+                }`}
+        >
+            {rank}
         </span>
     );
 }
