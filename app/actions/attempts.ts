@@ -137,3 +137,34 @@ export async function judgeAttempt(
     revalidatePath(`/tournaments/${tournamentId}/session`);
     return { success: true };
 }
+
+/**
+ * 修正モード：変更回数制限を無視して重量・ステータスを上書き
+ */
+export async function forceUpdateAttempt(
+    tournamentId: string,
+    attemptId: string,
+    data: {
+        declared_weight: number;
+        status?: "pending" | "success" | "fail" | "pass";
+    }
+) {
+    const supabase = await createClient();
+
+    const updatePayload: Record<string, unknown> = {
+        declared_weight: data.declared_weight,
+    };
+    if (data.status) {
+        updatePayload.status = data.status;
+    }
+
+    const { error } = await supabase
+        .from("wla_attempts")
+        .update(updatePayload)
+        .eq("id", attemptId);
+
+    if (error) return { error: error.message };
+
+    revalidatePath(`/tournaments/${tournamentId}/session`);
+    return { success: true };
+}
