@@ -8,7 +8,7 @@ import {
     type TournamentStatus,
 } from "@/lib/constants";
 import Link from "next/link";
-import { ArrowLeft, Calendar, MapPin } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, Play } from "lucide-react";
 
 type Props = {
     params: Promise<{ id: string }>;
@@ -71,6 +71,15 @@ export default async function TournamentDetailPage({ params }: Props) {
                             )}
                         </div>
                     </div>
+
+                    {/* Session link */}
+                    <Link
+                        href={`/tournaments/${id}/session`}
+                        className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 transition-all hover:shadow-emerald-500/40 hover:brightness-110 whitespace-nowrap"
+                    >
+                        <Play className="w-4 h-4" />
+                        競技進行画面
+                    </Link>
                 </div>
             </div>
 
