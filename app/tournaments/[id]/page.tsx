@@ -8,7 +8,7 @@ import {
     type TournamentStatus,
 } from "@/lib/constants";
 import Link from "next/link";
-import { ArrowLeft, Calendar, MapPin, Play } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, Play, BarChart3, Monitor } from "lucide-react";
 
 type Props = {
     params: Promise<{ id: string }>;
@@ -79,6 +79,21 @@ export default async function TournamentDetailPage({ params }: Props) {
                     >
                         <Play className="w-4 h-4" />
                         競技進行画面
+                    </Link>
+                    <Link
+                        href={`/tournaments/${id}/results`}
+                        className="inline-flex items-center gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 px-5 py-2.5 text-sm font-semibold text-amber-400 transition-all hover:bg-amber-500/20 hover:border-amber-500/40 whitespace-nowrap"
+                    >
+                        <BarChart3 className="w-4 h-4" />
+                        結果発表
+                    </Link>
+                    <Link
+                        href={`/tournaments/${id}/scoreboard`}
+                        className="inline-flex items-center gap-2 rounded-xl border border-white/[0.08] bg-slate-800/50 px-5 py-2.5 text-sm font-medium text-slate-300 transition-all hover:bg-slate-800 hover:text-white hover:border-white/[0.12] whitespace-nowrap"
+                        target="_blank"
+                    >
+                        <Monitor className="w-4 h-4" />
+                        スコアボード
                     </Link>
                 </div>
             </div>
